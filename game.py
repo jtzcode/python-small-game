@@ -29,7 +29,7 @@ def show_theme_message(width):
 def show_game_mission():
     """Print the game mission in the terminal window"""
     print_bold("Mission:")
-    print("\tChoose a hut where Sir Foo can rest...")
+    print("\tChoose a hut where Sir Eggy can rest...")
     print_bold("TIP:")
     print("Be careful as there are enemies lurking around!")
     print_dotted_line()
@@ -65,25 +65,74 @@ def process_user_choice():
     idx = int(user_choice)
     return idx
 
-def play_game(idx, huts):
-    print("\033[1m" + "Entering hut %d... " % idx + "\033[0m", end=' ')
-    if huts[idx - 1] != 'enemy':
+def attack(health_meter):
+    targets = 4 * ['player'] + 6 * ['enemy']
+    injured_target = random.choice(targets)
+    life = health_meter[injured_target]
+    injury = random.randint(10, 15)
+    health_meter[injured_target] = max(life - injury, 0)
+    print("Attack! ", end='')
+    show_health(health_meter)
+
+def play_game(health_meter):
+    huts = occupy_huts()
+    index = process_user_choice()
+    reveal_occupants(index, huts)
+
+    print("\033[1m" + "Entering hut %d... " % index + "\033[0m", end=' ')
+    if huts[index - 1] != 'enemy':
         print_bold("Congratulations! YOU WIN!!!")
     else:
-        print_bold("YOU LOSE  :(  Better luck next time")
+        print_bold("ENEMY SIGHTED! ", end='')
+        show_health(health_meter, bold=True)
+        continue_attack = True
+        
+        while continue_attack:
+            continue_attack = input('.......Continue attack? (y/n): ')
+            if continue_attack == 'n':
+                print_bold('RUNNING AWAY with following health status...')
+                show_health(health_meter, bold=True)
+                print_bold("GAME OVER")
+                break
+            
+            attack(health_meter)
+
+            if(health_meter['enemy'] <= 0):
+                print_bold('GOOD JOB! Enemy defeated, you win!')
+                break
+            
+            if(health_meter['player'] <= 0):
+                print_bold("YOU LOSE  :(  Better luck next time")
+                break
+            
+        
+
+def show_health(health_meter, bold=True):
+    """Show the remaining hit points of the player and the enemy"""
+    msg = "Health: Sir Eggy: %d, Enemy: %d" % (health_meter['player'], health_meter['enemy'])
+
+    if bold:
+        print_bold(msg)
+    else:
+        print(msg)
+
+def reset_health_meter(health_meter):
+    health_meter['enemy'] = 30
+    health_meter['player'] = 40
 
 def run_application():
     keep_playing = 'y'
     width = 72
+    health_meter = {}
+    reset_health_meter(health_meter)
 
     show_theme_message(width)
     show_game_mission()
 
     while keep_playing == 'y':
-        huts = occupy_huts()
-        index = process_user_choice()
-        reveal_occupants(index, huts)
-        play_game(index, huts)
+        reset_health_meter(health_meter)
+        
+        play_game(health_meter)
         keep_playing = input("Play again? Yes(y)/No(n):")
 
 if __name__ == '__main__':
