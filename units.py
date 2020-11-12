@@ -1,7 +1,8 @@
 from utils import print_bold, weighted_random_selection
+from abc import ABCMeta, abstractmethod
 import random
 
-class GameUnit:
+class AbstractGameUnit(metaclass=ABCMeta):
     def __init__(self, name=''):
         self.max_hp = 0
         self.health_meter = 0
@@ -9,6 +10,7 @@ class GameUnit:
         self.enemy = None
         self.unit_type = None
     
+    @abstractmethod
     def info(self):
         """Information on the unit (overridden in subclasses)"""
         pass
@@ -32,7 +34,7 @@ class GameUnit:
 
 
 
-class Knight(GameUnit):
+class Knight(AbstractGameUnit):
     def __init__(self, name="Sir Eggy"):
         super().__init__(name=name)
         self.max_hp = 40
@@ -60,7 +62,7 @@ class Knight(GameUnit):
 
     def acquire_hut(self, hut):
         print_bold("Entering hut %d..." % hut.number, end=' ')
-        is_enemy = (isinstance(hut.occupant, GameUnit) and hut.occupant.unit_type == 'enemy')
+        is_enemy = (isinstance(hut.occupant, AbstractGameUnit) and hut.occupant.unit_type == 'enemy')
         continue_attack = 'y'
         if is_enemy:
             print_bold("Enemy sighted!")
@@ -88,7 +90,7 @@ class Knight(GameUnit):
             hut.acquire(self)
             self.heal()
 
-class OrcRider(GameUnit):
+class OrcRider(AbstractGameUnit):
     def __init__(self, name=''):
         super().__init__(name=name)
         self.max_hp = 30
