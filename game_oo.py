@@ -41,12 +41,22 @@ class GameOfThrones:
         while verifying_choice:
             msg = "\033[1m" + "Choose a hut number to enter (1-5): " + "\033[0m"
             user_choice = input("\n" + msg)
-            index = int(user_choice)
-            if self.huts[index - 1].is_acquired:
-                print("You have already acquired this hut. Try again."
-                      "<INFO: You can NOT get healed in already acquired hut.>")
-            else:
-                verifying_choice = False
+            try:
+                index = int(user_choice)
+            except ValueError as e:
+                print_bold("Invalid input args: %s\n" % e.args)
+                continue
+
+            try:
+                if self.huts[index - 1].is_acquired:
+                    print("You have already acquired this hut. Try again."
+                        "<INFO: You can NOT get healed in already acquired hut.>")
+                else:
+                    verifying_choice = False
+            except IndexError:
+                print('Invalid input: ', index)
+                print_bold('Number should be in the range of 1-5. Try again.')
+                continue
             
         return index
 

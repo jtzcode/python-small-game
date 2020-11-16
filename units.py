@@ -1,5 +1,6 @@
 from utils import print_bold, weighted_random_selection
 from abc import ABCMeta, abstractmethod
+from exceptions import GameUnitException
 import random
 
 class AbstractGameUnit(metaclass=ABCMeta):
@@ -56,6 +57,9 @@ class Knight(AbstractGameUnit):
             self.health_meter = self.max_hp
         else:
             self.health_meter = max(self.max_hp, self.health_meter + heal_by)
+        
+        if self.health_meter > self.max_hp:
+            raise GameUnitException("Health meter greater than maximum value %d" % self.max_hp, 100)
 
         print_bold("You are HEALED!", end=' ')
         self.show_health(bold=True)
