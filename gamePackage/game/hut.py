@@ -1,4 +1,4 @@
-from utils import print_bold
+from game.utils import print_bold
 
 class Hut:
     def __init__(self, number, occupant):

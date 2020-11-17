@@ -1,6 +1,6 @@
-from units import Knight, OrcRider
-from hut import Hut
-from utils import print_bold
+from game.units import Knight, OrcRider
+from game.hut import Hut
+from game.utils import print_bold
 import random
 
 

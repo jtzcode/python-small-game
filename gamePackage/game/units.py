@@ -1,6 +1,6 @@
-from utils import print_bold, weighted_random_selection
+from game.utils import print_bold, weighted_random_selection
 from abc import ABCMeta, abstractmethod
-from exceptions import GameUnitException
+from game.exceptions import GameUnitException
 import random
 
 class AbstractGameUnit(metaclass=ABCMeta):

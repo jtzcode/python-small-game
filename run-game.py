@@ -1,4 +1,4 @@
-from game.game_oo import GameOfThrones
+from gamePackage.game.game_oo import GameOfThrones
 
 game = GameOfThrones()
 game.play()
