@@ -1,10 +1,12 @@
 from game.units import Knight, OrcRider
 from game.hut import Hut
+from game.factory import UnitFactory
 from game.utils import print_bold
 import random
 
 
 class GameOfThrones:
+    factory = UnitFactory
     def __init__(self):
         self.huts = []
         self.player = None
@@ -59,15 +61,17 @@ class GameOfThrones:
                 continue
             
         return index
-
-    def play(self):
-        self.player = Knight()
+    
+    def setup_game_scenario(self):
+        self.player = type(self).factory.create_unit('knight')
         self._occupy_nuts()
-        acquired_hut_counter = 0
 
         self.show_game_mission()
         self.player.show_health(bold=True)
 
+    def play(self):
+        self.setup_game_scenario()
+        acquired_hut_counter = 0
         while acquired_hut_counter < 5:
             index = self._process_user_choice()
             self.player.acquire_hut(self.huts[index-1])

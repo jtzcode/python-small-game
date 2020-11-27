@@ -4,12 +4,14 @@ from game.exceptions import GameUnitException
 import random
 
 class AbstractGameUnit(metaclass=ABCMeta):
-    def __init__(self, name=''):
+    def __init__(self, jump_method, name=''):
+        assert(isinstance(jump_method, callable))
         self.max_hp = 0
         self.health_meter = 0
         self.name = name
         self.enemy = None
         self.unit_type = None
+        self.jump = jump_method
     
     @abstractmethod
     def info(self):
@@ -37,10 +39,13 @@ class AbstractGameUnit(metaclass=ABCMeta):
 
 class Knight(AbstractGameUnit):
     def __init__(self, name="Sir Eggy"):
-        super().__init__(name=name)
+        super().__init__(self.jump_method, name=name)
         self.max_hp = 40
         self.health_meter = self.max_hp
         self.unit_type = 'friend'
+    
+    def jump_method(self):
+        print('Knight Jump!')
 
     def info(self):
         print("I  am an Eggy Knight!")
@@ -96,11 +101,14 @@ class Knight(AbstractGameUnit):
 
 class OrcRider(AbstractGameUnit):
     def __init__(self, name=''):
-        super().__init__(name=name)
+        super().__init__(self.jump_method, name=name)
         self.max_hp = 30
         self.health_meter = self.max_hp
         self.unit_type = 'enemy'
         self.hut_number = 0
 
+    def jump_method(self):
+        print('OrcRider Jump!')
+    
     def info(self):
         print("Grrrr..I am the Night King. Don't mess with me.")
